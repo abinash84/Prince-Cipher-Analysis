@@ -15,6 +15,20 @@ Round_constants=[[0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x0,0x
                 [0xd,0x3,0xb,0x5,0xa,0x3,0x9,0x9,0xc,0xa,0x0,0xc,0x2,0x3,0x9,0x9],
                 [0xc,0x0,0xa,0xc,0x2,0x9,0xb,0x7,0xc,0x9,0x7,0xc,0x5,0x0,0xd,0xd]]
 
+
+
+def hex_to_list(data):
+        ret=[]
+        for num in data:
+                ret.append(int(num,16))
+        return ret
+def list_to_hex(data):
+        res=""
+        for nibble in data:
+                temp=hex(nibble)[2:]
+                res+=temp
+        return res
+
 def hex_to_bin(data):
         ret=[0 for i in range(4*len(data))]
         i=0
@@ -141,13 +155,17 @@ def core(data, key):
         return bit_xor(bit_xor(Round_constants[11],key),data)
 
 def extend(key):
-        newKey=[0 for i in range(48)]
-        for i in range(16):
-                newKey[i]=key[i]
-                newKey[i+16]=(key[i]>>1)|(key[(i + 1) % 4] >> 3)
-                newKey[i+32]=key[i]
-        newKey[31]=newKey[31]^(key[15]&0x20)
-        return newKey
+        key_bin= hex_to_bin(key)
+
+        newKey=[0 for i in range(192)]
+        for i in range(64):
+                newKey[i]=key_bin[i]
+                newKey[i+128]=key_bin[i+64]
+        for i in range(63):
+                newKey[65+i]=key_bin[i]
+        newKey[64]=key_bin[63]
+        newKey[127]=newKey[127]^key_bin[0]
+        return bin_to_int(newKey)
 
 
 
@@ -165,6 +183,42 @@ def encrypt(plaintext,key):
         data=bit_xor(data,k0)
         data=core(data,k1)
         data=bit_xor(data,k0prime)
-        return data
+        return list_to_hex(data)
 
+def decrypt(plaintext,key):
+        final_key= "0000000000000000c0ac29b7c97c50dd"
+        data=[0 for i in range(len(plaintext))]
+        for i in range(len(plaintext)):
+                data[i]=int(plaintext[i],16)
+        k=[0 for i in range(len(key))]
+        for i in range(len(key)):
+                k[i]=int(key[i],16)
+        final=[0 for i in range(len(final_key))]
+        for i in range(len(final_key)):
+                final[i]=int(final_key[i],16)
+        final=bit_xor(k,final)
+        extended=extend(final)
+        k0prime=extended[0:16]
+        k0=extended[16:32]
+        k1=extended[32:48]
+        data=bit_xor(data,k0)
+        data=core(data,k1)
+        data=bit_xor(data,k0prime)
+        return list_to_hex(data)
+
+# Encryption Test Vectors
 print(encrypt("0000000000000000","00000000000000000000000000000000"))
+print(encrypt("ffffffffffffffff","00000000000000000000000000000000"))
+print(encrypt("0000000000000000","ffffffffffffffff0000000000000000"))
+print(encrypt("0000000000000000","0000000000000000ffffffffffffffff"))
+print(encrypt("0123456789abcdef","0000000000000000fedcba9876543210"))
+
+
+# Decryption Test Vectors
+print(decrypt("818665aa0d02dfda","00000000000000000000000000000000"))
+print(decrypt("604ae6ca03c20ada","00000000000000000000000000000000"))
+print(decrypt("9fb51935fc3df524","ffffffffffffffff0000000000000000"))
+print(decrypt("78a54cbe737bb7ef","0000000000000000ffffffffffffffff"))
+print(decrypt("ae25ad3ca8fa9ccf","0000000000000000fedcba9876543210"))
+
+
