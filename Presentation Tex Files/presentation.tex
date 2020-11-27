@@ -1,0 +1,52 @@
+\documentclass[hyperref={pdfpagelabels=false}]{beamer}
+\usepackage{lmodern}
+\usepackage{adjustbox}
+\usetheme{Frankfurt}
+\usecolortheme{crane}
+
+\title{A Detailed Analysis of PRINCE}  
+\author{\texttt{Team\_Alpha}} 
+\institute{
+	\includegraphics[scale=0.08]{logoiitbh}
+	
+	Department of \texttt{Computer Science and Engineering}\\ 
+	Indian Institute of Technology Bhilai}
+
+\begin{document}
+	\begin{frame}
+	\titlepage
+
+\end{frame} 
+
+\AtBeginSection[]
+{
+	\begin{frame}<beamer>
+	\frametitle{Outline}
+	\tableofcontents[currentsection]
+\end{frame}
+}
+
+\input{intro}
+\input{spec}
+\input{observe}
+\input{bpnominate}
+\input{specialatt}
+\input{conclu}
+
+
+\begin{frame}{Thanks}
+\begin{block}{Team Members}
+	\begin{itemize}
+		\item Name - Abinash Acharya , Roll No. - 11840050
+		\item Name - Thummala Milind Kesar, Roll No.- 11841160
+		\item Name - Pothukuchi Siddhartha, Roll No.- 11840800
+	\end{itemize}
+\end{block}
+\begin{block}{Implementation Info}
+	\begin{itemize}
+		\item Github Link: \\ \url{https://github.com/abinash84/Prince-Cipher-Analysis}
+	\end{itemize}
+\end{block}
+\end{frame}
+
+\end{document}

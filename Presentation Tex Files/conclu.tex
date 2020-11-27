@@ -1,0 +1,17 @@
+\section{Conclusion}
+
+\begin{frame}{Conclusion}
+\begin{itemize}
+    \item Prince uses FX construction. $k_{0}$ and $k_{1}$ are used as whitening keys whereas $k_{1}$ is the 64-bit
+key for a 12-round block cipher referred to as $PRINCE_{CORE}$.
+\item One of the most critical and expensive operations of the cipher is the substitution, where we use the same Sbox 16 times (rather than having 16 different Sboxes). Therefore, the implementation of PRINCE started with a search for the most suitable Sbox for the target design specifications.
+\end{itemize}
+\end{frame}
+\begin{frame}
+\begin{itemize}
+\item We applied a 4-round integral attack by using 5 sets of $2^{4}$ plaintexts. Data complexity is $2x5x2^{4}≈2^{7}$, Time complexity is $16x2x5x2^{4}≈2^{11}$
+\item In implementing the reflexive property, we do not consider related key-attacks here in the classical sense of enlarging the power of an adversary. But without a careful choice, the construction we used for implementing the reflection property might result in key-recovery attacks for certain weak-key classes, as soon as the core cipher is vulnerable to related key-attacks
+\end{itemize}
+
+\end{frame}
+
